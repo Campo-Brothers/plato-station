@@ -1,13 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using plato_data;
+using Pomelo.EntityFrameworkCore.MySql;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 
 namespace plato_server
 {
@@ -24,6 +25,13 @@ namespace plato_server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContextPool<PlatoStationDbContext>(options => options
+                // replace with your connection string
+                .UseMySql("server=192.168.1.102;port=3306;database=plato_station;user=root;password=wethod01!", mySqlOptions => mySqlOptions
+                    // replace with your Server Version and Type
+                    .ServerVersion(new ServerVersion(new Version(8, 0, 18), ServerType.MySql))
+            ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

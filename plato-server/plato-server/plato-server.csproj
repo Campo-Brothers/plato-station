@@ -6,11 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\plato-data\plato-data.csproj" />
     <ProjectReference Include="..\Plato-ServerStat\Plato-ServerStat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Views\SystemStatus\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
   </ItemGroup>
 
 
