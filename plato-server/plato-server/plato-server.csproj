@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>plato_server</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plato-ServerStat\Plato-ServerStat.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\SystemStatus\" />
+  </ItemGroup>
+
+
+
+</Project>

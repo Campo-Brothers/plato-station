@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Plato_ServerStat</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="ImagicleLibrary">
+      <HintPath>..\..\..\libs\ImagicleLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\libs\log4net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

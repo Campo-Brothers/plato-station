@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "System status";
+}
+<h1>System status</h1>
+<table>
+    <tr>
+        <td>
+            <img src="~/images/ram.png" height="48" width="48" alt="" />
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td width="100">
+                        Free: <b>@Model.Memory.Free</b>
+                    </td>
+                    <td width="100">
+                        Used: <b>@Model.Memory.Used</b>
+                    </td>
+                    <td width="100">
+                        Total: <b>@Model.Memory.Total</b>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td valign="top">
+            <img src="~/images/cpu.png" height="48" width="48" alt="" />
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <th>Core</th>
+                    <th>User</th>
+                    <th>System</th>
+                    <th>Idle</th>
+                </tr>
+                @foreach (var core in this.Model.Cpu.Cores)
+                {
+                @if(core.Core.StartsWith("CPU"))
+                    {
+                <tr>
+                    <td width="90"><b>@core.Core</b></td>
+                    <td width="90"><b>@core.User %</b></td>
+                    <td width="90"><b>@core.System %</b></td>
+                    <td width="90"><b>@core.Idle %</b></td>
+                </tr>
+                    }
+                else
+                {
+                <tr>
+                    <td width="90">@core.Core</td>
+                    <td width="90">@core.User %</td>
+                    <td width="90">@core.System %</td>
+                    <td width="90">@core.Idle %</td>
+                </tr>
+                }
+                }
+            </table>
+        </td>
+    </tr>
+</table>
