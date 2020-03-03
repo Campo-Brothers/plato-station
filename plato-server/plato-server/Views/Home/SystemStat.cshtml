@@ -1,23 +1,30 @@
 ﻿@{
     ViewData["Title"] = "System status";
 }
-<h1>System status</h1>
+
+<style>
+    .imageInverted {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+    }
+</style>
+<h1><p style="color:lightgray">System status</p></h1>
 <table>
     <tr>
         <td>
-            <img src="~/images/ram.png" height="48" width="48" alt="" />
+            <img class="imageInverted" src="~/images/ram.png" height="48" width="48" alt="" />
         </td>
         <td>
             <table>
                 <tr>
                     <td width="100">
-                        Free: <b>@Model.Memory.Free</b>
+                        <p style="color:lightgray">Free: <b>@Model.Memory.Free</b></p>
                     </td>
                     <td width="100">
-                        Used: <b>@Model.Memory.Used</b>
+                        <p style="color:lightgray">Used: <b>@Model.Memory.Used</b></p>
                     </td>
                     <td width="100">
-                        Total: <b>@Model.Memory.Total</b>
+                        <p style="color:lightgray">Total: <b>@Model.Memory.Total</b></p>
                     </td>
                 </tr>
             </table>
@@ -25,41 +32,49 @@
     </tr>
 </table>
 
-<table>
-    <tr>
-        <td valign="top">
-            <img src="~/images/cpu.png" height="48" width="48" alt="" />
-        </td>
-        <td>
-            <table>
-                <tr>
-                    <th>Core</th>
-                    <th>User</th>
-                    <th>System</th>
-                    <th>Idle</th>
-                </tr>
-                @foreach (var core in this.Model.Cpu.Cores)
-                {
-                @if(core.Core.StartsWith("CPU"))
-                    {
-                <tr>
-                    <td width="90"><b>@core.Core</b></td>
-                    <td width="90"><b>@core.User %</b></td>
-                    <td width="90"><b>@core.System %</b></td>
-                    <td width="90"><b>@core.Idle %</b></td>
-                </tr>
-                    }
-                else
-                {
-                <tr>
-                    <td width="90">@core.Core</td>
-                    <td width="90">@core.User %</td>
-                    <td width="90">@core.System %</td>
-                    <td width="90">@core.Idle %</td>
-                </tr>
-                }
-                }
-            </table>
-        </td>
+    <table>
+        <tr>
+            <td valign="top">
+                <img class="imageInverted" src="~/images/cpu.png" height="48" width="48" alt="" />
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <th>
+<p style="color:lightgray">
+    Core</p></th>
+    <th>
+<p style="color:lightgray">
+    User</p></th>
+    <th>
+<p style="color:lightgray">
+    System</p></th>
+    <th>
+<p style="color:lightgray">
+    Idle</p></th>
     </tr>
-</table>
+    @foreach (var core in this.Model.Cpu.Cores)
+    {
+        @if (core.Core.StartsWith("CPU"))
+        {
+            <tr>
+                <td width="90"><p style="color:lightgray"><b>@core.Core</b></p></td>
+                <td width="90"><p style="color:lightgray"><b>@core.User %</b></p></td>
+                <td width="90"><p style="color:lightgray"><b>@core.System %</b></p></td>
+                <td width="90"><p style="color:lightgray"><b>@core.Idle %</b></p></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td width="90"><div style="color:lightgray">@core.Core</div></td>
+                <td width="90"><div style="color:lightgray">@core.User %</div></td>
+                <td width="90"><div style="color:lightgray">@core.System %</div></td>
+                <td width="90"><div style="color:lightgray">@core.Idle %</div></td>
+            </tr>
+        }
+    }
+    </table>
+    </td>
+    </tr>
+    </table>

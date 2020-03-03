@@ -6,11 +6,18 @@
     <title>@ViewData["Title"] - Plato station</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+    .imageInverted {
+    filter: invert(100%);
+    -webkit-filter: invert(100%);
+    }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
             <div class="container">
+                <img class="imageInverted" src="~/images/plato.png" width="32" height="32" alt="" />&nbsp;&nbsp;&nbsp;&nbsp;
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Plato station</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
