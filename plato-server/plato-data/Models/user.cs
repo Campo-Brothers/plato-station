@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace plato_data.Models
+namespace plato.data.Models
 {
     [Table("users")]
     public class User

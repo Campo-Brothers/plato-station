@@ -1,7 +1,7 @@
-﻿using Plato_ServerStat.Cpu;
-using Plato_ServerStat.Memory;
+﻿using Plato.System.Stats.Cpu;
+using Plato.System.Stats.Memory;
 
-namespace Plato_ServerStat.System
+namespace Plato.System.Stats.System
 {
     public class SystemStatusController
     {

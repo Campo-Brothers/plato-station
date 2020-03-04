@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Plato_ServerStat</RootNamespace>
+    <RootNamespace>Plato.System.Stats</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

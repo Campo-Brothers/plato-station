@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using plato_data.Models;
+using plato.data.Models;
 
-namespace plato_data
+namespace plato.data.database
 {
-    public class PlatoStationDbContext: DbContext
+    internal class PlatoStationDbContext : DbContext
     {
         public PlatoStationDbContext(DbContextOptions<PlatoStationDbContext> o) : base(o) { }
         public DbSet<User> Users { get; set; }
-        
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
-        {}
+        { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

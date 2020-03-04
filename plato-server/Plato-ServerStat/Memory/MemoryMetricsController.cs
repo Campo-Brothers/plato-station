@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Plato_ServerStat.Memory
+namespace Plato.System.Stats.Memory
 {
     public class MemoryMetricsController
     {

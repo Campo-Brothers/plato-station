@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>plato_server</RootNamespace>
+    <RootNamespace>plato.server</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\plato-data\plato-data.csproj" />
-    <ProjectReference Include="..\Plato-ServerStat\Plato-ServerStat.csproj" />
+    <ProjectReference Include="..\plato-data\plato.data.csproj" />
+    <ProjectReference Include="..\Plato-ServerStat\Plato.System.Stats.csproj" />
   </ItemGroup>
 
   <ItemGroup>

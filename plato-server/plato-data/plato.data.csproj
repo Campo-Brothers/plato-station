@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>plato_data</RootNamespace>
+    <RootNamespace>plato.data</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Plato_ServerStat.Cpu
+namespace Plato.System.Stats.Cpu
 {
     public class CpuMetricsController
     {

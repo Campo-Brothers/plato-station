@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Plato_ServerStat.Cpu
+namespace Plato.System.Stats.Cpu
 {
     public class CpuMetrics
     {

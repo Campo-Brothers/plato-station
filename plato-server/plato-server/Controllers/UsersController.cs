@@ -1,33 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using plato_data;
+using plato.data.repository;
+using System.Threading.Tasks;
 
-namespace plato_server.Controllers
+namespace plato.server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly PlatoStationDbContext _dbContext;
+        private IUserRepository _userService;
 
-        public UsersController(ILogger<HomeController> logger, PlatoStationDbContext dbContext)
+        public UsersController(IUserRepository userService)
         {
-            _logger = logger;
-            _dbContext = dbContext;
+            _userService = userService;
         }
 
-        // GET api/sync
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAll()
         {
-            return GetUsers();
-        }
-
-        private ObjectResult GetUsers()
-        {
-            var users = _dbContext.Users;
-            return new ObjectResult(users);
+            var users = await _userService.GetAll();
+            return Ok(users);
         }
     }
 }

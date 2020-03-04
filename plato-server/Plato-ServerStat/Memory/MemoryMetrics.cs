@@ -1,4 +1,4 @@
-﻿namespace Plato_ServerStat.Memory
+﻿namespace Plato.System.Stats.Memory
 {
     public class MemoryMetrics
     {
