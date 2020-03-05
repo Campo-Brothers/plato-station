@@ -9,19 +9,33 @@ namespace plato.server
 
     public class Startup
     {
+        #region Public Properties
+
+        public IConfiguration Configuration { get; }
+
+        #endregion
+
+        #region Initialization
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        #endregion
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
 
+            var termoRepository = new TermoRepository(Configuration);
+            services.AddSingleton<ITermoRepository>(termoRepository);
+
             var userRepository = new UserRepository(Configuration);
             services.AddSingleton<IUserRepository>(userRepository);
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddHttpContextAccessor();
         }
