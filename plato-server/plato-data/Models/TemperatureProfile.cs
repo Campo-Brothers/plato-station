@@ -15,12 +15,19 @@ namespace plato.data.Models
         [Column("description")]
         public string Description { get; set; }
 
-        [Column("current")]
-        public string Current { get; set; }
+        [NotMapped]
+        public bool Current
+        {
+            get => _current != "0";
+            set => _current = value ? "1" : "0";
+        }
 
         [Column("image")]
         public string Image { get; set; }
 
         public virtual ICollection<TemperatureSchedule> Schedules { get; set; }
+
+        [Column("current")]
+        private string _current { get; set; }
     }
 }

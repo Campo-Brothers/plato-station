@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "System status";
+}
+
+</style>
+<h1><p style="color:gray">System status</p></h1>
+<table>
+    <tr>
+        <td>
+            <img src="~/images/ram.png" height="48" width="48" alt="" />
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td width="100">
+                        <p style="color:grey">Free: <b>@Model.Memory.Free</b></p>
+                    </td>
+                    <td width="100">
+                        <p style="color:gray">Used: <b>@Model.Memory.Used</b></p>
+                    </td>
+                    <td width="100">
+                        <p style="color:gray">Total: <b>@Model.Memory.Total</b></p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td valign="top">
+            <img src="~/images/cpu.png" height="48" width="48" alt="" />
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <th>
+                        <p style="color:gray">
+                            Core
+                        </p>
+                    </th>
+                    <th>
+                        <p style="color:gray">
+                            User
+                        </p>
+                    </th>
+                    <th>
+                        <p style="color:gray">
+                            System
+                        </p>
+                    </th>
+                    <th>
+                        <p style="color:gray">
+                            Idle
+                        </p>
+                    </th>
+                </tr>
+                @foreach (var core in this.Model.Cpu.Cores)
+                {
+                    @if (core.Core.StartsWith("CPU"))
+                    {
+                        <tr>
+                            <td width="90"><p style="color:gray"><b>@core.Core</b></p></td>
+                            <td width="90"><p style="color:gray"><b>@core.User %</b></p></td>
+                            <td width="90"><p style="color:gray"><b>@core.System %</b></p></td>
+                            <td width="90"><p style="color:gray"><b>@core.Idle %</b></p></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td width="90"><div style="color:gray">@core.Core</div></td>
+                            <td width="90"><div style="color:gray">@core.User %</div></td>
+                            <td width="90"><div style="color:gray">@core.System %</div></td>
+                            <td width="90"><div style="color:gray">@core.Idle %</div></td>
+                        </tr>
+                    }
+                }
+            </table>
+        </td>
+    </tr>
+</table>

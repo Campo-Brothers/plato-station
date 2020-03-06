@@ -1,6 +1,6 @@
 using System;
 
-namespace plato_server.Models
+namespace plato.server.Models
 {
     public class ErrorViewModel
     {

@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 
 namespace plato.server.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class TermoController : ControllerBase
+    public class TermoController : Controller
     {
         private ITermoRepository _termoService;
 
@@ -15,11 +13,18 @@ namespace plato.server.Controllers
             _termoService = termoService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Index()
         {
             var profiles = await _termoService.GetAllProfiles();
-            return Ok(profiles);
+            
+            return View(profiles);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    var profiles = await _termoService.GetAllProfiles();
+        //    return Ok(profiles);
+        //}
     }
 }

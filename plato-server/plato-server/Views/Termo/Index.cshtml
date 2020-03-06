@@ -1,0 +1,41 @@
+﻿@{
+        ViewData["Title"] = "Settings controllo temperatura";
+}
+
+    <style type="text/css">
+        .leftCol a img {
+            float: right;
+        }
+        .rightAlign { float: right; }
+    </style>
+
+<div class="text-center">
+    <h2 class="display-4">Termostato</h2>
+</div>
+
+<div>
+    <b>Profili configurati</b>
+    <div style="float:right">
+        <a href="@Url.Action("Index", "Home")">
+            <img id="ns" src="~/images/plus.png" height="24" width="24" style="top:inherit" alt="Nuovo profilo" />
+        </a>
+
+    </div>
+</div>
+<table class="table table-responsive table-hover">
+    <tr>
+        <th>Nome</th>
+        <th>Descrizione</th>
+        <th>profilo corrente</th>
+        <th>configurazioni</th>
+    </tr>
+    @foreach (var d in Model)
+    {
+        <tr>
+            <td>@d.Name</td>
+            <td>@d.Description</td>
+            <td>@d.Current</td>
+            <td>@d.Schedules.Count</td>
+        </tr>
+    }
+</table>
