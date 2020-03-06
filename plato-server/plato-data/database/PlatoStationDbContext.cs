@@ -31,7 +31,6 @@ namespace plato.data.database
                 entity.Property(e => e.DayOfWeek).IsRequired();
                 entity.Property(e => e.Start).IsRequired();
                 entity.Property(e => e.End).IsRequired();
-                entity.Property(e => e.Profile).IsRequired();
                 entity.HasOne(p => p.Profile).WithMany(s => s.Schedules);
             });
 
