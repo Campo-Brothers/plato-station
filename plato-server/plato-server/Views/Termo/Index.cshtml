@@ -1,41 +1,68 @@
 ﻿@{
-        ViewData["Title"] = "Settings controllo temperatura";
+    ViewData["Title"] = "Settings controllo temperatura";
 }
 
-    <style type="text/css">
-        .leftCol a img {
-            float: right;
-        }
-        .rightAlign { float: right; }
-    </style>
+<style type="text/css">
+    .leftCol a img {
+        float: right;
+    }
+
+    .rightAlign {
+        float: right;
+    }
+</style>
 
 <div class="text-center">
     <h2 class="display-5">Termostato</h2>
 </div>
 
-<div>
-    <b>Profili configurati</b>
-    <div style="float:right">
-        <a href="@Url.Action("Index", "Home")">
-            <img id="ns" src="~/images/plus.png" height="24" width="24" style="top:inherit" alt="Nuovo profilo" />
-        </a>
-
-    </div>
-</div>
-<table class="table table-responsive table-hover">
-    <tr>
-        <th>Nome</th>
-        <th>Descrizione</th>
-        <th>profilo corrente</th>
-        <th>configurazioni</th>
-    </tr>
-    @foreach (var d in Model)
-    {
+@if (Model is plato.data.Models.TemperatureProfile)
+{
+    <p>Profilo: @Model.Name</p>
+    <table class="table table-responsive table-hover">
         <tr>
-            <td>@d.Name</td>
-            <td>@d.Description</td>
-            <td>@d.Current</td>
-            <td>@d.Schedules.Count</td>
+            <th>Giorno</th>
+            <th>Inizio</th>
+            <th>Fine</th>
+            <th>Temp</th>
         </tr>
-    }
-</table>
+        @foreach (var schedule in Model.Schedules)
+        {
+            <tr>
+                <td>@schedule.DayOfWeek</td>
+                <td>@schedule.Start</td>
+                <td>@schedule.End</td>
+                <td>@schedule.Temperature</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>
+        <b>Profili configurati</b>
+        <div style="float:right">
+            <a href="@Url.Action("Index", "Home")">
+                <img id="ns" src="~/images/plus.png" height="24" width="24" style="top:inherit" alt="Nuovo profilo" />
+            </a>
+
+        </div>
+    </div>
+    <table class="table table-responsive table-hover">
+        <tr>
+            <th>Nome</th>
+            <th>Descrizione</th>
+            <th>Attivo</th>
+            <th></th>
+        </tr>
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@d.Name</td>
+                <td>@d.Description</td>
+                <td>@d.Current</td>
+                <td></td>
+            </tr>
+        }
+    </table>
+}

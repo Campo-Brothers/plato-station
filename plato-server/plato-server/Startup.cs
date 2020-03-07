@@ -5,6 +5,7 @@ namespace plato.server
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
     using plato.data.repository;
 
     public class Startup
@@ -40,7 +41,7 @@ namespace plato.server
             services.AddHttpContextAccessor();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -63,6 +64,8 @@ namespace plato.server
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            loggerFactory.AddFile("VAR/LOG/plato.server.log");
         }
     }
 }

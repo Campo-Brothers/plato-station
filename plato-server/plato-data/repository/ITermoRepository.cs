@@ -7,5 +7,7 @@ namespace plato.data.repository
     public interface ITermoRepository
     {
         Task<IEnumerable<TemperatureProfile>> GetAllProfiles();
+        Task<TemperatureProfile> FillProfileWithDefault(TemperatureProfile profile);
+        Task<TemperatureProfile> GetActiveProfile();
     }
 }
