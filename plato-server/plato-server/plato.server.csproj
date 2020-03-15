@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\plato-data\plato.data.csproj" />
     <ProjectReference Include="..\Plato-ServerStat\Plato.System.Stats.csproj" />
+    <ProjectReference Include="..\plato.logging\plato.logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

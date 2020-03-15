@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plato.data", "plato-data\pl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plato.server", "plato-server\plato.server.csproj", "{282DE450-F388-4D40-9C4C-7C37EA16E956}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plato.logging", "plato.logging\plato.logging.csproj", "{9265483F-0DD3-4014-987D-87699F079D84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{282DE450-F388-4D40-9C4C-7C37EA16E956}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{282DE450-F388-4D40-9C4C-7C37EA16E956}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{282DE450-F388-4D40-9C4C-7C37EA16E956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9265483F-0DD3-4014-987D-87699F079D84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9265483F-0DD3-4014-987D-87699F079D84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9265483F-0DD3-4014-987D-87699F079D84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9265483F-0DD3-4014-987D-87699F079D84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

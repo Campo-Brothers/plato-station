@@ -28,6 +28,7 @@ namespace plato.server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSingleton<IConfiguration>(Configuration);
 
             var termoRepository = new TermoRepository(Configuration);
             services.AddSingleton<ITermoRepository>(termoRepository);
@@ -64,8 +65,6 @@ namespace plato.server
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            loggerFactory.AddFile("VAR/LOG/plato.server.log");
         }
     }
 }

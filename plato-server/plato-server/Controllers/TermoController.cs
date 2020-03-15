@@ -1,27 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ImagicleLibrary.Logging;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using plato.data.repository;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace plato.server.Controllers
 {
     public class TermoController : Controller
     {
-        private readonly ITermoRepository _termoService;
-        private readonly ILogger _logger;
+        private readonly ITermoRepository _termoRepository;
 
-        public TermoController(ITermoRepository termoService, ILogger<TermoController> logger)
+        public TermoController(IConfiguration configuration, ITermoRepository termoRepository)
         {
-            _termoService = termoService;
-            _logger = logger;
+            _termoRepository = termoRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var profile = await _termoService.GetActiveProfile();
+            var profile = await _termoRepository.GetActiveProfile();
             
-            _logger.BeginScope(typeof(TermoController));
-            _logger.LogInformation($"Chiamata GET con oggetto di ritorno: {@profile}");
+            Log.Information<TermoController>(LogBuilder.StartNew("header").KeyValue("valore", 1), this);
             
             return View(profile);
         }
