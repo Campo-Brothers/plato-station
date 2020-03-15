@@ -28,7 +28,7 @@ namespace plato.server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton(Configuration);
 
             var termoRepository = new TermoRepository(Configuration);
             services.AddSingleton<ITermoRepository>(termoRepository);
@@ -42,7 +42,7 @@ namespace plato.server
             services.AddHttpContextAccessor();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
