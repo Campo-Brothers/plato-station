@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using plato.data.repository;
 using System.Threading.Tasks;
 
@@ -10,9 +11,9 @@ namespace plato.server.Controllers
     {
         private IUserRepository _userService;
 
-        public UsersController(IUserRepository userService)
+        public UsersController(IConfiguration configuration)
         {
-            _userService = userService;
+            _userService = new UserRepository(configuration); ;
         }
 
         [HttpGet]
