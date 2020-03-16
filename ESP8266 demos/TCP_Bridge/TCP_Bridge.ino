@@ -6,7 +6,7 @@
 
 #define UART_BAUD 19200
 #define packTimeout 5 // ms (if nothing more on UART, then send packet)
-#define bufferSize 8192
+#define bufferSize 1000
 
 // For STATION mode:
 const char *ssid = "FASTWEB-1-D31843";  // Your ROUTER SSID
@@ -36,7 +36,7 @@ void setup()
   {
     delay(100);
   }
-  server.begin(); // start TCP server 
+  server.begin();  
 }
 
 void loop() 
@@ -54,7 +54,6 @@ void loop()
       buf1[i1] = (uint8_t)client.read(); 
       if(i1<bufferSize-1) i1++;
     }
-    // now send to UART:
     digitalWrite(D0, HIGH);
     Serial.write(buf1, i1);
     delay(10);
