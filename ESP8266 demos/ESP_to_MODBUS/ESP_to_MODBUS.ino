@@ -1,4 +1,5 @@
-//ESP -> MODBUS bridge demo
+//ESP -> MODBUS bridge demo 
+//From Modbus TCP to Modbus RTU
 
 
 #include <SoftwareSerial.h>
