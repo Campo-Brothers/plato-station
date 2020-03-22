@@ -36,13 +36,14 @@ void init_termo_data()
     termo_data.treshold = 0;
 }
 
-void update_termo_data()
+int update_termo_data()
 {
   //------------------------------------------------------------
   // Qui va aggiunto il codice che legge il termostato da MODBUS
   // e aggiorna TUTTA la struttura termo_data (temperatura, 
   // umidità e soglia)
   //------------------------------------------------------------
+  return SUCCESS;
 }
 
 int update_termo_treshold(int new_treshold)
@@ -80,18 +81,23 @@ void get_termo_data() {
     char JSONmessageBuffer[200];
 
     //aggiorno TUTTO il termo_data coi dati letti da MODBUS
-    update_termo_data();
-
-    //leggo i dati dal termo_data e li riporto nel jsonObj
-    jsonObj["id"] = termo_data.id;
-    jsonObj["type"] = termo_data.type;
-    jsonObj["temperature"] = termo_data.temperature;
-    jsonObj["humidity"] = termo_data.humidity;
-    jsonObj["treshold"] = termo_data.treshold;
-
-    //converto il json e invio la risposta
-    serializeJson(jsonDoc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
-    http_rest_server.send(200, "application/json", JSONmessageBuffer);
+    if(update_termo_data() == SUCCESS)
+    {
+      //leggo i dati dal termo_data e li riporto nel jsonObj
+      jsonObj["id"] = termo_data.id;
+      jsonObj["type"] = termo_data.type;
+      jsonObj["temperature"] = termo_data.temperature;
+      jsonObj["humidity"] = termo_data.humidity;
+      jsonObj["treshold"] = termo_data.treshold;
+  
+      //converto il json e invio la risposta
+      serializeJson(jsonDoc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
+      http_rest_server.send(200, "application/json", JSONmessageBuffer);
+    }
+    else 
+    {
+      http_rest_server.send(500);
+    }
 }
 
 //Quando entro qui, è stato chiesto di aggiornare la soglia con un nuovo valore
@@ -118,7 +124,7 @@ void post_put_termo_data() {
     Serial.println(post_body);
 
     //carica jsonBody con il dato deserializzato letto dal server args
-    deserializeJson(jsonBody,http_rest_server.arg("plain"));
+    deserializeJson(jsonBody, post_body);
 
     Serial.print("HTTP Method: ");
     Serial.println(http_rest_server.method());
