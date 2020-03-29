@@ -1,5 +1,6 @@
-#include <ESP8266WebServer.h>
-#include <ArduinoJson.h>
+#include <WiFiClientSecure.h>
+#include <WiFi.h>
+#include <AsyncElegantOTA.h>
 
 //connection parameters
 #define HTTP_REST_PORT 80
@@ -9,6 +10,7 @@
 #define ERROR -1
 #define ASK_TEMP 0
 #define ASK_HUM 1
+
 
 //wireless connection data
 //const char* wifi_ssid = "ECP-TEST";
@@ -23,9 +25,9 @@ ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 struct Termostato {
     int id;
     char* type;
-    int temperature;
-    int humidity;
-    int treshold;
+    float temperature;
+    float humidity;
+    float treshold;
 } termo_data;
 
 //Variabili
@@ -71,55 +73,44 @@ void init_termo_data()
     termo_data.treshold = 0;
 }
 
-void update_temp_data()
+void ask_termo_data(int requestType)
 {
   //Request
-      int i = 6;
+      
       Serial.flush();
       digitalWrite(D0,HIGH);
       delay(1);
-      Serial.write(temperature_array,8);
+
+      if(requestType == ASK_TEMP)
+          Serial.write(temperature_array,8);
+       if(requestType == ASK_HUM) 
+          Serial.write(humidity_array,8);
+         
       Serial.flush();
       digitalWrite(D0,LOW);
-      
- //Response
-      while (Serial.available() > 0)  
-        {
-          rtu_buf[i] = Serial.read();
-          i ++;
-          yield();
-          termo_data.temperature = rtu_buf[10];  
-        }
-
-int update_termo_data()
-{
-  //------------------------------------------------------------
-  // Qui va aggiunto il codice che legge il termostato da MODBUS
-  // e aggiorna TUTTA la struttura termo_data (temperatura, 
-  // umidità e soglia)
-  //------------------------------------------------------------
-  return SUCCESS;
 }
 
-void update_hum_data()
+void give_termo_data(int requestType)
 {
-  //Request
-      int i = 6;
-      Serial.flush();
-      digitalWrite(D0,HIGH);
-      delay(1);
-      Serial.write(humidity_array,8);
-      Serial.flush();
-      digitalWrite(D0,LOW);
-      
  //Response
+       int i = 6;
       while (Serial.available() > 0)  
         {
           rtu_buf[i] = Serial.read();
           i ++;
           yield();
-          termo_data.humidity = rtu_buf[10];  
-        }
+
+          if(requestType == ASK_TEMP)
+          {
+            float temp = rtu_buf[10] | (rtu_buf[9]<<8);
+            termo_data.temperature = (temp/10); 
+          }
+          if(requestType == ASK_HUM)
+          {
+            float hum = rtu_buf[10] | (rtu_buf[9]<<8);
+            termo_data.humidity = (hum/10); 
+          }            
+       }
 }
 
 
@@ -156,38 +147,26 @@ void get_termo_data() {
     StaticJsonDocument<200> jsonDoc;
     JsonObject jsonObj = jsonDoc.to<JsonObject>();
     char JSONmessageBuffer[200];
+
+    ask_termo_data(ASK_TEMP);
+    delay(20);
+    give_termo_data(ASK_TEMP);
+    ask_termo_data(ASK_HUM);
+    delay(20);
+    give_termo_data(ASK_HUM);
     
-     //leggo i dati dal termo_data e li riporto nel jsonObj dove aver aggiornato il modbus
+    //aggiorno TUTTO il termo_data coi dati letti da MODBUS
+    
+    //leggo i dati dal termo_data e li riporto nel jsonObj
     jsonObj["id"] = termo_data.id;
-    jsonObj["type"] = termo_data.type;    
-    update_temp_data();
+    jsonObj["type"] = termo_data.type;
     jsonObj["temperature"] = termo_data.temperature;
-    //update_hum_data();
     jsonObj["humidity"] = termo_data.humidity;
     jsonObj["treshold"] = termo_data.treshold;
 
     //converto il json e invio la risposta
     serializeJson(jsonDoc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
     http_rest_server.send(200, "application/json", JSONmessageBuffer);
-
-    //aggiorno TUTTO il termo_data coi dati letti da MODBUS
-    if(update_termo_data() == SUCCESS)
-    {
-      //leggo i dati dal termo_data e li riporto nel jsonObj
-      jsonObj["id"] = termo_data.id;
-      jsonObj["type"] = termo_data.type;
-      jsonObj["temperature"] = termo_data.temperature;
-      jsonObj["humidity"] = termo_data.humidity;
-      jsonObj["treshold"] = termo_data.treshold;
-  
-      //converto il json e invio la risposta
-      serializeJson(jsonDoc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
-      http_rest_server.send(200, "application/json", JSONmessageBuffer);
-    }
-    else 
-    {
-      http_rest_server.send(500);
-    }
 }
 
 //Quando entro qui, è stato chiesto di aggiornare la soglia con un nuovo valore
@@ -272,5 +251,5 @@ void setup(void) {
 }
 
 void loop(void) {
-    http_rest_server.handleClient();
+  http_rest_server.handleClient();
 }
