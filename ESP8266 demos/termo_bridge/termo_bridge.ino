@@ -9,10 +9,9 @@
 #define ERROR -1
 #define ASK_TEMP 0
 #define ASK_HUM 1
+#define ASK_TRESHOLD 2
 
 //wireless connection data
-//const char* wifi_ssid = "ECP-TEST";
-//const char* wifi_passwd = "ECP_TEST";
 
 const char* wifi_ssid = "FRITZ!Powerline 540E";
 const char* wifi_passwd = "13179208264364704063";
@@ -23,39 +22,43 @@ ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 struct Termostato {
     int id;
     char* type;
-    int temperature;
-    int humidity;
-    int treshold;
+    float temperature;
+    float humidity;
+    float treshold;
 } termo_data;
 
 //Variabili
+uint8_t treshold_array_CRC[8];
 uint8_t rtu_buf[255];
 uint8_t rtu_len;
 uint8_t temperature_array[] = {0x02, 0x03, 0x00, 0x00, 0x00, 0x01, 0x84, 0x39};
 uint8_t humidity_array[] = {0x02, 0x03, 0x00, 0x01, 0x00, 0x01, 0xD5, 0xF9};
-
+uint8_t treshold_array_WR[] = {0x02, 0x06, 0x00, 0x02, 0x00, 0x00};
+uint8_t treshold_array[] = {0x02, 0x03, 0x00, 0x02, 0x00, 0x01, 0x25, 0xF9};
 
 //Calcolo CRC16 per Modbus
-uint16_t calcCRC(uint8_t u8_buff_size)
+unsigned int ModRTU_CRC(uint8_t *buf, int len)
 {
-  uint32_t tmp, tmp2, flag;
-  tmp = 0xFFFF;
-  for (uint8_t i = 0; i < u8_buff_size; i++)
-  {
-    tmp = tmp ^ rtu_buf[i];
-      for (uint8_t j = 1; j <= 8; j++)
-    {
-      flag = tmp & 0x0001;
-      tmp >>= 1;
-      if (flag)
-        tmp ^= 0xA001;
-    }
-  }
-  tmp2 = tmp >> 8;
-  tmp = (tmp << 8) | tmp2;
-  tmp &= 0xFFFF;
+    unsigned int crc = 0xFFFF;
+    int pos;
+    int i;
 
-  return tmp;
+    for(pos = 0; pos < len; pos++)
+    {
+        crc^=(unsigned int)buf[pos];
+
+        for(i =8; i !=0; i--)
+        {
+           if((crc & 0x0001)!=0)
+           {
+               crc>>=1;
+               crc^=0xA001;  //0xA001
+           }
+           else
+               crc>>=1;
+        }
+    }
+    return crc;
 }
 
 
@@ -71,65 +74,77 @@ void init_termo_data()
     termo_data.treshold = 0;
 }
 
-void update_temp_data()
+void ask_termo_data(int requestType)
 {
   //Request
-      int i = 6;
+     
       Serial.flush();
       digitalWrite(D0,HIGH);
       delay(1);
-      Serial.write(temperature_array,8);
+      if(requestType == ASK_TEMP)
+        Serial.write(temperature_array,8);
+      if(requestType == ASK_HUM)
+        Serial.write(humidity_array,8);
+      if(requestType == ASK_TRESHOLD)
+        Serial.write(treshold_array,8);
       Serial.flush();
       digitalWrite(D0,LOW);
-      
+}
+
+void read_termo_data(int requestType)
+{
  //Response
+      int i = 6;
       while (Serial.available() > 0)  
         {
           rtu_buf[i] = Serial.read();
           i ++;
           yield();
-          termo_data.temperature = rtu_buf[10];  
-        }
+          if(requestType == ASK_TEMP)
+          {
+            float temp = (rtu_buf[10] | (rtu_buf[9]<<8));
+            termo_data.temperature = temp;
+          }
+            
+          if(requestType == ASK_HUM)
+          {
+             float hum = (rtu_buf[10] | (rtu_buf[9]<<8));
+             termo_data.humidity = hum; 
+          }
 
-int update_termo_data()
-{
-  //------------------------------------------------------------
-  // Qui va aggiunto il codice che legge il termostato da MODBUS
-  // e aggiorna TUTTA la struttura termo_data (temperatura, 
-  // umidità e soglia)
-  //------------------------------------------------------------
-  return SUCCESS;
-}
-
-void update_hum_data()
-{
-  //Request
-      int i = 6;
-      Serial.flush();
-      digitalWrite(D0,HIGH);
-      delay(1);
-      Serial.write(humidity_array,8);
-      Serial.flush();
-      digitalWrite(D0,LOW);
-      
- //Response
-      while (Serial.available() > 0)  
-        {
-          rtu_buf[i] = Serial.read();
-          i ++;
-          yield();
-          termo_data.humidity = rtu_buf[10];  
+          if(requestType == ASK_TRESHOLD)
+          {
+             float SP = (rtu_buf[10] | (rtu_buf[9]<<8));
+             if(SP == 32768)  
+              SP = 0;
+             termo_data.treshold = SP; 
+          }
         }
 }
 
-
-int update_termo_treshold(int new_treshold)
+int update_termo_treshold(float new_treshold)
 {
-  //------------------------------------------------------------------
-  // Qui va aggiunto il codice che modifica la soglia sul termostato.
-  // Se va tutto bene (aggiorna correttamente tramite MODBUS) ritorna
-  // SUCCESS, se qualcosa va male ritorna ERROR
-  //------------------------------------------------------------------
+  uint8_t new_tresholdBH = (uint8_t)new_treshold>>8;
+  uint8_t new_tresholdBL = (uint8_t)new_treshold & 0xFF; 
+  treshold_array_WR[4] = new_tresholdBH;
+  treshold_array_WR[5] = new_tresholdBL;
+
+  unsigned int CRC = ModRTU_CRC(treshold_array_WR, 6);
+  uint8_t CRCH = CRC>>8;
+  uint8_t CRCL = CRC & 0xFF;
+
+  for(int a=0; a<9; a++)
+    treshold_array_CRC[a] = treshold_array_WR[a];
+  treshold_array_CRC[6] = CRCL;
+  treshold_array_CRC[7] = CRCH;
+  
+  Serial.flush();
+  digitalWrite(D0,HIGH);
+  delay(1);
+  Serial.write(treshold_array_CRC,8);
+  Serial.flush();
+  digitalWrite(D0,LOW);
+  
   return SUCCESS;
 }
 
@@ -156,13 +171,21 @@ void get_termo_data() {
     StaticJsonDocument<200> jsonDoc;
     JsonObject jsonObj = jsonDoc.to<JsonObject>();
     char JSONmessageBuffer[200];
+
+    ask_termo_data(ASK_TEMP);
+    delay(20);
+    read_termo_data(ASK_TEMP);
+    ask_termo_data(ASK_HUM);
+    delay(20);
+    read_termo_data(ASK_HUM);
+    ask_termo_data(ASK_TRESHOLD);
+    delay(20);
+    read_termo_data(ASK_TRESHOLD);
     
      //leggo i dati dal termo_data e li riporto nel jsonObj dove aver aggiornato il modbus
     jsonObj["id"] = termo_data.id;
-    jsonObj["type"] = termo_data.type;    
-    update_temp_data();
+    jsonObj["type"] = termo_data.type;    ;
     jsonObj["temperature"] = termo_data.temperature;
-    //update_hum_data();
     jsonObj["humidity"] = termo_data.humidity;
     jsonObj["treshold"] = termo_data.treshold;
 
@@ -171,8 +194,8 @@ void get_termo_data() {
     http_rest_server.send(200, "application/json", JSONmessageBuffer);
 
     //aggiorno TUTTO il termo_data coi dati letti da MODBUS
-    if(update_termo_data() == SUCCESS)
-    {
+//    if(update_termo_data() == SUCCESS)
+//    {
       //leggo i dati dal termo_data e li riporto nel jsonObj
       jsonObj["id"] = termo_data.id;
       jsonObj["type"] = termo_data.type;
@@ -183,11 +206,11 @@ void get_termo_data() {
       //converto il json e invio la risposta
       serializeJson(jsonDoc, JSONmessageBuffer, sizeof(JSONmessageBuffer));
       http_rest_server.send(200, "application/json", JSONmessageBuffer);
-    }
-    else 
-    {
-      http_rest_server.send(500);
-    }
+//    }
+//    else 
+//    {
+//      http_rest_server.send(500);
+//    }
 }
 
 //Quando entro qui, è stato chiesto di aggiornare la soglia con un nuovo valore
@@ -268,7 +291,7 @@ void setup(void) {
     config_rest_server_routing();
 
     http_rest_server.begin();
-    //Serial.println("HTTP REST Server Started");
+
 }
 
 void loop(void) {
