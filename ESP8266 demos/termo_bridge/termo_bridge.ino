@@ -13,8 +13,11 @@
 
 //wireless connection data
 
-const char* wifi_ssid = "FRITZ!Powerline 540E";
-const char* wifi_passwd = "13179208264364704063";
+//const char* wifi_ssid = "FRITZ!Powerline 540E";
+//const char* wifi_passwd = "13179208264364704063";
+
+const char* wifi_ssid = "FASTWEB-1-D31843";
+const char* wifi_passwd = "25698D48B1";
 
 ESP8266WebServer http_rest_server(HTTP_REST_PORT);
 
