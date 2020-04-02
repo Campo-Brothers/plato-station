@@ -123,12 +123,13 @@ void read_termo_data(int requestType)
              termo_data.treshold = SP; 
           }
         }
+        Serial.flush();
 }
 
-int update_termo_treshold(float new_treshold)
+int update_termo_treshold(uint16_t new_treshold)
 {
-  uint8_t new_tresholdBH = (uint8_t)new_treshold>>8;
-  uint8_t new_tresholdBL = (uint8_t)new_treshold & 0xFF; 
+  uint8_t new_tresholdBH = new_treshold>>8;
+  uint8_t new_tresholdBL = new_treshold & 0xFF; 
   treshold_array_WR[4] = new_tresholdBH;
   treshold_array_WR[5] = new_tresholdBL;
 
@@ -175,6 +176,9 @@ void get_termo_data() {
     JsonObject jsonObj = jsonDoc.to<JsonObject>();
     char JSONmessageBuffer[200];
 
+    ask_termo_data(ASK_TEMP); //primo ciclo di lettura temperatura "dummy" 
+    delay(20);
+    read_termo_data(ASK_TEMP);
     ask_termo_data(ASK_TEMP);
     delay(20);
     read_termo_data(ASK_TEMP);
@@ -187,7 +191,7 @@ void get_termo_data() {
     
      //leggo i dati dal termo_data e li riporto nel jsonObj dove aver aggiornato il modbus
     jsonObj["id"] = termo_data.id;
-    jsonObj["type"] = termo_data.type;    ;
+    jsonObj["type"] = termo_data.type;    
     jsonObj["temperature"] = termo_data.temperature;
     jsonObj["humidity"] = termo_data.humidity;
     jsonObj["treshold"] = termo_data.treshold;
@@ -220,7 +224,7 @@ void get_termo_data() {
 int json_to_termo_data(StaticJsonDocument<500> doc) 
 {
   //recupero il valore dal server
-    int treshold = doc["treshold"];
+    uint16_t treshold = doc["treshold"];
 
     //qui va aggiornata la soglia sul termostato via MODBUS,
     //e deve tornare 0
